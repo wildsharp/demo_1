@@ -1,0 +1,29 @@
+﻿@page "/"
+@rendermode InteractiveServer
+
+<PageTitle>Home</PageTitle>
+
+<p>
+    <label>
+        Register IP: 
+        <input @bind="InputValue" />
+    </label>
+</p>
+
+
+@code{
+    private string? _inputValue;
+
+    private string? InputValue {
+        get => _inputValue; 
+        set { 
+            _inputValue = value;
+            AddRegistration();
+        }
+    }
+
+    private void AddRegistration()
+    {
+        
+    }    
+}
