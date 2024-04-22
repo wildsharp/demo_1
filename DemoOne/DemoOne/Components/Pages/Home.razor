@@ -4,23 +4,36 @@
 
 <PageTitle>Home</PageTitle>
 
-<p>
+<p>    
     <label>
-        Register IP: 
-        <input @bind="InputValue" />
-    </label>
+        Register IP:
+        <input @bind="InputValue" />        
+    </label>   
+
+    @if (!hideErrorMsg)
+    {
+        <span>
+            IP already registered
+        </span>
+    }    
 </p>
 
 
-<p>    
-    Registrations:
+<p style="margin-top: 30px">
+    <h5>Registrations:</h5>
     @if (!registrations.Any())
     {
         <div>There are no registrations</div>
     }
     else
     {
-        <table cellspacing="100">
+        <table cellpadding="5">
+            <thead>
+                <tr>
+                    <th>IP</th>
+                    <th>Date added</th>
+                </tr>
+            </thead>
             <tbody>
                 @foreach(var (ip, time) in registrations)
                 {
@@ -38,30 +51,28 @@
 </p>
 
 @code{
-    private string? _inputValue;
-
+    
     private string? InputValue {
-        get => _inputValue; 
-        set { 
-            _inputValue = value;
-            AddRegistration();
-        }
+        get => string.Empty;
+        set => AddRegistration(value);
     }
 
-    private bool error;
+    private bool hideErrorMsg = true;
 
     private List<(string, DateTime)> registrations = new();
 
-    private void AddRegistration()
+    private void AddRegistration(string? ip)
     {
-        if (_inputValue == null)
+        hideErrorMsg = true;
+
+        if (string.IsNullOrEmpty(ip))
         {
             return;
         }
 
-        if (!RegistrationHandler.AddRegistration(_inputValue))
+        if (!RegistrationHandler.AddRegistration(ip))
         {
-            error = true;
+            hideErrorMsg = false;
             return;
         }
 

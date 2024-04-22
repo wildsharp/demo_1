@@ -20,10 +20,7 @@ namespace DemoOne.Data
 
         public bool RemoveRegistration(string ip)
         {
-            if ( !_registeredIps.ContainsKey(ip)) { return false; }
-
-            _registeredIps.Remove(ip);
-            return true;
+            return _registeredIps.Remove(ip);
         }
     }
 }
