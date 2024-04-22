@@ -1,5 +1,6 @@
 ﻿@page "/"
 @rendermode InteractiveServer
+@inject DemoOne.Data.IRegistrationHandler RegistrationHandler
 
 <PageTitle>Home</PageTitle>
 
@@ -10,6 +11,31 @@
     </label>
 </p>
 
+
+<p>    
+    Registrations:
+    @if (!registrations.Any())
+    {
+        <div>There are no registrations</div>
+    }
+    else
+    {
+        <table cellspacing="100">
+            <tbody>
+                @foreach(var (ip, time) in registrations)
+                {
+                    <tr>
+                        <td>@ip</td>
+                        <td>@time</td>
+                        <td>
+                            <button @onclick="x => RemoveRegistration(ip)">X</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }    
+</p>
 
 @code{
     private string? _inputValue;
@@ -22,8 +48,30 @@
         }
     }
 
+    private bool error;
+
+    private List<(string, DateTime)> registrations = new();
+
     private void AddRegistration()
     {
-        
+        if (_inputValue == null)
+        {
+            return;
+        }
+
+        if (!RegistrationHandler.AddRegistration(_inputValue))
+        {
+            error = true;
+            return;
+        }
+
+        registrations = RegistrationHandler.GetRegistrations();
+    }    
+
+    private void RemoveRegistration(string ip)
+    {
+        RegistrationHandler.RemoveRegistration(ip);
+
+        registrations = RegistrationHandler.GetRegistrations();
     }    
 }
