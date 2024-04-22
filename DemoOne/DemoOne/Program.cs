@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+// Add instance of RegistrationHandler for dependency injection
 builder.Services.AddScoped<IRegistrationHandler, RegistrationHandler>();
 
 var app = builder.Build();

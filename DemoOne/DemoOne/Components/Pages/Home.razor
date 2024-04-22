@@ -7,7 +7,7 @@
 <p>    
     <label>
         Register IP:
-        <input @bind="InputValue" />        
+        <input @bind="InputIp" />        
     </label>   
 
     @if (!hideErrorMsg)
@@ -51,38 +51,57 @@
 </p>
 
 @code{
-    
-    private string? InputValue {
+
+    // Governs the display of the "already registered" message
+    private bool hideErrorMsg = true;
+
+    // Full list of registered IPs
+    private List<(string, DateTime)> registrations = new();
+
+    // Property for registering user input IP
+    private string? InputIp
+    {
         get => string.Empty;
         set => AddRegistration(value);
     }
 
-    private bool hideErrorMsg = true;
-
-    private List<(string, DateTime)> registrations = new();
-
+    // Method for calling the RegistrationHandler to add IP
     private void AddRegistration(string? ip)
     {
+        // reset error msg
         hideErrorMsg = true;
 
+        // check if input exists
         if (string.IsNullOrEmpty(ip))
         {
             return;
         }
 
+        // add registration, if fail then show error msg
         if (!RegistrationHandler.AddRegistration(ip))
         {
             hideErrorMsg = false;
             return;
         }
 
+        // read full list of registrations
         registrations = RegistrationHandler.GetRegistrations();
     }    
 
+    // Method for calling the RegistrationHandler to remove IP
     private void RemoveRegistration(string ip)
     {
+        // remove IP. Failing is not registered here
         RegistrationHandler.RemoveRegistration(ip);
 
+        // read full list of registrations
         registrations = RegistrationHandler.GetRegistrations();
-    }    
+    }
+
+    // Get the latest list of registraions after rendering
+    protected override Task OnInitializedAsync()
+    {
+        registrations = RegistrationHandler.GetRegistrations();
+        return base.OnInitializedAsync();
+    }
 }
